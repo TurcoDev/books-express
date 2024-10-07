@@ -1,6 +1,7 @@
 const express = require('express');
 const connectDB = require('./dbConnect');
-const Author = require('./models');
+const Author = require('./schemas/author.schema');
+const Book = require('./schemas/book.schema');
 const app = express();
 const port = 3003;
 
@@ -11,6 +12,10 @@ connectDB();
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
+
+/***
+ * Author
+ */
 
 app.get('/authors', async (req, res) => {
   try {
@@ -53,6 +58,26 @@ app.delete('/author/:id', async (req, res) => {
     console.log(error);
   }
 });
+
+
+/***
+ * Books
+ */
+
+app.post('/book', async (req, res) => {
+  try {
+    console.log(req.body);
+    const book = new Book(req.body);
+    const response = await book.save();
+    res.send(response);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+/***
+ * Correr el servidor Express
+ */
 
 app.listen(port, () => {
   console.log(`App listening on http://localhost:${port}`)
