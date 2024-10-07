@@ -64,12 +64,43 @@ app.delete('/author/:id', async (req, res) => {
  * Books
  */
 
+app.get('/books', async (req, res) => {
+  try {
+    const books = await Book.find().populate('authorId');
+    res.send(books);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 app.post('/book', async (req, res) => {
   try {
     console.log(req.body);
     const book = new Book(req.body);
     const response = await book.save();
     res.send(response);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.put('/book/:id', async (req, res) => {
+  try {
+    const book = await Book.findByIdAndUpdate(req.params.id, req.body);
+    if (!book) {
+      return res.status(404).send('Book not found');
+    }
+    res.send(book);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+app.delete('/book/:id', async (req, res) => {
+  try {
+    const book = await Book.findByIdAndDelete(req.params.id);
+    console.log(book);
+    res.send('Book deleted!');
   } catch (error) {
     console.log(error);
   }
